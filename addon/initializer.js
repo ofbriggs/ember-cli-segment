@@ -1,7 +1,7 @@
 import Ember from 'ember';
 import segmentMixin from './mixin';
 
-function initialize(registry, application) {
+function initialize(application) {
   var segment = Ember.Object.extend(segmentMixin);
   application.register('service:segment', segment, { singleton: true });
   application.inject('route', 'segment', 'service:segment');
@@ -9,17 +9,17 @@ function initialize(registry, application) {
   application.inject('controller', 'segment', 'service:segment');
 }
 
-function instanceInitialize(container) {
-  var config = container.lookupFactory('config:environment');
-  var router = container.lookup('router:main');
-  var segment = container.lookup('service:segment');
+function instanceInitialize(applicationInstance) {
+  var config = applicationInstance.resolveRegistration('config:environment');
+  var router = applicationInstance.lookup('router:main');
+  var segment = applicationInstance.lookup('service:segment');
 
   segment.set('config', config);
 
   router.on('didTransition', function() {
     segment.trackPageView();
 
-    var applicationRoute = container.lookup('route:application');
+    var applicationRoute = applicationInstance.lookup('route:application');
     if(applicationRoute && typeof applicationRoute.identifyUser === 'function') {
       applicationRoute.identifyUser();
     }

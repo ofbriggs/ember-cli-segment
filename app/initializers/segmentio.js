@@ -8,10 +8,10 @@ function checkVersion(version) {
 
 export default {
   name: 'segment',
-  initialize: function(registry, application) {
-    initialize(registry, application);
+  initialize: function(application) {
+    initialize(application);
     if (!checkVersion(Ember.VERSION)) {
-      instanceInitialize(registry);
+      instanceInitialize(application);
     }
   }
 };
